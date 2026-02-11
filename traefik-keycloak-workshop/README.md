@@ -105,18 +105,18 @@ The project is divided into **9 stages**. Each stage adds a new layer of knowled
 
 ---
 
-### Stage 1: Traefik — First Steps 🚦
+### Stage 1: Traefik — First Steps 🚦 ✅
 
 **Goal:** Understand what Traefik is, how Docker auto-discovery works, and how to route traffic.
 
 **What we do:**
-- [ ] Create `docker-compose.yml` with Traefik
-- [ ] Configure the Traefik Dashboard (`traefik.localhost`)
-- [ ] Add a simple `whoami` service as a routing test
-- [ ] Learn core concepts: **entrypoints**, **routers**, **services**, **middlewares**
-- [ ] Add labels in docker-compose for auto-discovery
+- [x] Create `docker-compose.yml` with Traefik
+- [x] Configure the Traefik Dashboard (`traefik.localhost`)
+- [x] Add a simple `whoami` service as a routing test
+- [x] Learn core concepts: **entrypoints**, **routers**, **services**, **middlewares**
+- [x] Add labels in docker-compose for auto-discovery
 
-**You will know:**
+**You now know:**
 - How Traefik automatically discovers Docker containers
 - How routing rules work (Host, PathPrefix)
 - What the Traefik Dashboard is and how to read it

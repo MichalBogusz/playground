@@ -1,0 +1,47 @@
+# Docker networks for service isolation
+networks:
+  traefik-net:
+    name: traefik-net
+    driver: bridge
+
+services:
+  # Traefik - Reverse Proxy / API Gateway
+  traefik:
+    image: traefik:3.6.8
+    container_name: traefik
+    restart: unless-stopped
+    ports:
+      - "80:80"      # HTTP entrypoint
+      - "8080:8080"  # Traefik dashboard
+    volumes:
+      # Mount Docker socket so Traefik can discover containers
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Mount static configuration
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      # Mount directory for access logs
+      - ./traefik/logs:/var/log/traefik
+    networks:
+      - traefik-net
+    labels:
+      # Enable Traefik for this container
+      - "traefik.enable=true"
+      # Dashboard routing
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=web"
+
+  # Whoami - Simple test service that returns container info
+  whoami:
+    image: traefik/whoami:v1.10
+    container_name: whoami
+    restart: unless-stopped
+    networks:
+      - traefik-net
+    labels:
+      # Enable Traefik routing for this service
+      - "traefik.enable=true"
+      # Router configuration
+      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+      # Service configuration (Traefik auto-detects port 80 in whoami)
+      - "traefik.http.services.whoami.loadbalancer.server.port=80"
