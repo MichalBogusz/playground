@@ -1,4 +1,4 @@
-# Copilot Instructions — Traefik + Keycloak Workshop
+# AI Agent Instructions — Traefik + Keycloak Workshop
 
 ## Project Overview
 
