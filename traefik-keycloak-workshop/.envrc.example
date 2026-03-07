@@ -1,0 +1,12 @@
+# Example environment variables file for docker-compose
+# Copy this to .envrc and customize the values
+# Then run: direnv allow
+
+# Keycloak Admin Credentials
+export KEYCLOAK_ADMIN_USER=admin
+export KEYCLOAK_ADMIN_PASSWORD=admin
+
+# Keycloak Database
+export KEYCLOAK_DB_NAME=keycloak
+export KEYCLOAK_DB_USER=keycloak
+export KEYCLOAK_DB_PASSWORD=keycloak

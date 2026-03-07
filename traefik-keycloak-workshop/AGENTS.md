@@ -76,6 +76,21 @@ docker compose down             # stop everything
 docker compose build <svc>      # rebuild specific service
 ```
 
+## AI Agent Guidelines
+
+### Command Explanations
+**Always explain commands before running them:**
+- **What** the command does (brief technical description)
+- **Why** it's needed in this context (the goal)
+- Include this in the `explanation` parameter when using terminal tools
+
+**Example:**
+```
+Command: docker compose up -d
+Explanation: Start all services in detached mode (background)
+Goal: Launch Keycloak and database for Stage 2
+```
+
 ## Important Notes
 - This is a **learning project** — each stage builds incrementally. Do not jump ahead or add features from later stages prematurely.
 - The `certs/` directory contains generated certificates — do not commit private keys.

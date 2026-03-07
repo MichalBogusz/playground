@@ -1,4 +1,4 @@
-.PHONY: help up down restart logs ps clean dashboard
+.PHONY: help up down restart logs ps clean dashboard keycloak-setup
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -32,3 +32,6 @@ whoami: ## Test whoami service
 	@echo "\n=== Testing whoami service ==="
 	@curl -s http://whoami.localhost
 	@echo "\n"
+
+keycloak-setup: ## Configure Keycloak: workflow realm, roles, users, OIDC client
+	bash keycloak/setup.sh

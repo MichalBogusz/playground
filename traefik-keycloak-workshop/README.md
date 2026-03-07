@@ -129,27 +129,30 @@ traefik/traefik.yml          # static configuration
 
 ---
 
-### Stage 2: Keycloak — Setup and Configuration 🔐
+### Stage 2: Keycloak — Setup and Configuration 🔐 ✅
 
 **Goal:** Run Keycloak behind Traefik, create a realm, users, and roles.
 
 **What we do:**
-- [ ] Add Keycloak to `docker-compose.yml` with PostgreSQL
-- [ ] Expose Keycloak through Traefik at `auth.localhost`
-- [ ] Create the `workflow` realm
-- [ ] Create roles: `creator`, `approver`, `viewer`
-- [ ] Create test users and assign roles
-- [ ] Create a `public` type client for the frontend
+- [x] Add Keycloak to `docker-compose.yml` with PostgreSQL
+- [x] Expose Keycloak through Traefik at `auth.localhost`
+- [x] Create the `workflow` realm
+- [x] Create roles: `creator`, `approver`, `viewer`
+- [x] Create test users and assign roles
+- [x] Create a `public` type client for the frontend
 
-**You will know:**
+**You now know:**
 - What realm, client, and roles are in Keycloak
-- How to administer Keycloak through the UI
+- How to configure Keycloak via Admin REST API (repeatable, versionable)
+- How network segmentation isolates the database from other services
 - How Keycloak issues JWT tokens with roles
 
 **Files:**
 ```
-docker-compose.yml           # extended with Keycloak + DB
-keycloak/realm-export.json   # optional configuration export
+docker-compose.yml           # extended with Keycloak + PostgreSQL
+.envrc                       # secrets loaded via direnv (gitignored)
+.envrc.example               # template for other developers
+keycloak/setup.sh            # Admin API setup script (realm/roles/users/client)
 ```
 
 ---

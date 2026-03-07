@@ -3,6 +3,7 @@ traefik/logs/
 *.log
 
 # Environment variables (secrets)
+.envrc
 .env
 .env.local
 .env.*.local

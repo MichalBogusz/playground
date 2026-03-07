@@ -3,6 +3,9 @@ networks:
   traefik-net:
     name: traefik-net
     driver: bridge
+  keycloak-net:
+    name: keycloak-net
+    driver: bridge
 
 services:
   # Traefik - Reverse Proxy / API Gateway
@@ -45,3 +48,62 @@ services:
       - "traefik.http.routers.whoami.entrypoints=web"
       # Service configuration (Traefik auto-detects port 80 in whoami)
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
+
+  # PostgreSQL - Database for Keycloak
+  postgres-keycloak:
+    image: postgres:16-alpine
+    container_name: postgres-keycloak
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME:-keycloak}
+      POSTGRES_USER: ${KEYCLOAK_DB_USER:-keycloak}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD:-keycloak}
+    volumes:
+      - postgres-keycloak-data:/var/lib/postgresql/data
+    networks:
+      - keycloak-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${KEYCLOAK_DB_USER:-keycloak}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Keycloak - Identity Provider
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: keycloak
+    restart: unless-stopped
+    command: start-dev
+    environment:
+      # Admin user
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      # Database
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/${KEYCLOAK_DB_NAME:-keycloak}
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER:-keycloak}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:-keycloak}
+      # Hostname
+      KC_HOSTNAME: auth.localhost
+      KC_HOSTNAME_STRICT: false
+      KC_HTTP_ENABLED: true
+      # Proxy settings (behind Traefik)
+      KC_PROXY_HEADERS: xforwarded
+    networks:
+      - traefik-net
+      - keycloak-net
+    depends_on:
+      postgres-keycloak:
+        condition: service_healthy
+    labels:
+      # Enable Traefik routing for this service
+      - "traefik.enable=true"
+      # Router configuration
+      - "traefik.http.routers.keycloak.rule=Host(`auth.localhost`)"
+      - "traefik.http.routers.keycloak.entrypoints=web"
+      # Service configuration
+      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
+
+# Volumes for persistent data
+volumes:
+  postgres-keycloak-data:
